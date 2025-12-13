@@ -96,9 +96,7 @@ class MyApp extends StatelessWidget {
         darkTheme: ThemeModes.setDarkTheme(
           ThemeList.getThemeModel(themeController.currentTheme.value),
         ),
-        themeMode: ThemeList.getThemeModel(
-          themeController.currentTheme.value,
-        ).themeMode,
+        themeMode: themeController.brightness.value,
         initialRoute: AppRoutes.splash,
         getPages: AppPages.pages,
       ),

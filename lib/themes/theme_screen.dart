@@ -7,6 +7,7 @@ import 'package:resonate/themes/theme_icon_enum.dart';
 import 'package:resonate/themes/theme_list.dart';
 import 'package:resonate/themes/theme_tile_title.dart';
 import 'package:resonate/themes/theme_tile_trailing.dart';
+import 'package:resonate/themes/light_mode_toggle.dart';
 
 class ThemeScreen extends StatelessWidget {
   ThemeScreen({super.key});
@@ -23,80 +24,99 @@ class ThemeScreen extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
           child: (themeController.currentTheme.value == 'none')
               ? const Text("none")
-              : ListView.builder(
-                  itemCount: list.length,
-                  itemBuilder: (context, index) {
-                    // Cache the selected theme for reuse below
-                    final bool isSelected =
-                        themeController.currentTheme.value ==
-                        list[index].name.toLowerCase();
-
-                    // Cache the localized theme title for reuse below
-                    final String title = AppLocalizations.of(
-                      context,
-                    )!.chooseTheme("${list[index].name.toLowerCase()}Theme");
-
-                    // Cache the theme for reuse below
-                    final ThemeModel theme = list[index];
-
-                    // Select the appropriate IconData for the theme, using a default if not found
-                    final IconData iconData = ThemeIcons.values
-                        .firstWhere(
-                          (e) => e.theme == theme.name.toLowerCase(),
-                          orElse: () => ThemeIcons.classic,
-                        )
-                        .icon;
-
-                    return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 5),
-                      decoration: BoxDecoration(),
-                      child: ListTile(
-                        contentPadding: EdgeInsets.symmetric(
-                          vertical: 13,
-                          horizontal: 18,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          side: BorderSide(
-                            color: isSelected
-                                ? theme.primaryColor
-                                : Colors.transparent,
-                            width: 2, // constant width preventing reflow
-                          ),
-                        ),
-                        onTap: () {
-                          themeController.setTheme(theme.name.toLowerCase());
-                        },
-                        leading: Container(
-                          padding: const EdgeInsets.all(12.0),
-                          decoration: BoxDecoration(
-                            color: theme.primaryColor,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.grey.shade100,
-                              width: 1,
-                            ),
-                          ),
-                          child: Icon(iconData, size: 25, color: Colors.white),
-                        ),
-                        trailing: TileTrailing(
-                          theme: theme,
-                          isSelected: isSelected,
-                        ),
-                        tileColor: isSelected
-                            ? theme.primaryColor
-                            : Colors.black26,
-                        selected: isSelected,
-                        selectedColor: theme.primaryColor,
-                        selectedTileColor: theme.secondaryColor,
-                        title: TileTitle(
-                          themeName: title,
-                          theme: theme,
-                          isSelected: isSelected,
-                        ),
+              : Column(
+                  children: [
+                    // Light Mode Toggle Section
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                      child: BrightnessToggle(
+                        style: BrightnessToggleStyle.switchTile,
                       ),
-                    );
-                  },
+                    ),
+                    // Divider
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Divider(),
+                    ),
+                    // Theme Selection List
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: list.length,
+                        itemBuilder: (context, index) {
+                          // Cache the selected theme for reuse below
+                          final bool isSelected =
+                              themeController.currentTheme.value ==
+                              list[index].name.toLowerCase();
+
+                          // Cache the localized theme title for reuse below
+                          final String title = AppLocalizations.of(
+                            context,
+                          )!.chooseTheme("${list[index].name.toLowerCase()}Theme");
+
+                          // Cache the theme for reuse below
+                          final ThemeModel theme = list[index];
+
+                          // Select the appropriate IconData for the theme, using a default if not found
+                          final IconData iconData = ThemeIcons.values
+                              .firstWhere(
+                                (e) => e.theme == theme.name.toLowerCase(),
+                                orElse: () => ThemeIcons.classic,
+                              )
+                              .icon;
+
+                          return Container(
+                            margin: const EdgeInsets.symmetric(vertical: 5),
+                            decoration: BoxDecoration(),
+                            child: ListTile(
+                              contentPadding: EdgeInsets.symmetric(
+                                vertical: 13,
+                                horizontal: 18,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                side: BorderSide(
+                                  color: isSelected
+                                      ? theme.primaryColor
+                                      : Colors.transparent,
+                                  width: 2, // constant width preventing reflow
+                                ),
+                              ),
+                              onTap: () {
+                                themeController.setTheme(theme.name.toLowerCase());
+                              },
+                              leading: Container(
+                                padding: const EdgeInsets.all(12.0),
+                                decoration: BoxDecoration(
+                                  color: theme.primaryColor,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.grey.shade100,
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Icon(iconData, size: 25, color: Colors.white),
+                              ),
+                              trailing: TileTrailing(
+                                theme: theme,
+                                isSelected: isSelected,
+                              ),
+                              tileColor: isSelected
+                                  ? theme.primaryColor
+                                  : Colors.black26,
+                              selected: isSelected,
+                              selectedColor: theme.primaryColor,
+                              selectedTileColor: theme.secondaryColor,
+                              title: TileTitle(
+                                themeName: title,
+                                theme: theme,
+                                isSelected: isSelected,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
         ),
       ),
